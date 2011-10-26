@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ====================================================================== 
+     24 apr 2009 10:59:14                                                        
+
+     JMS JMX Connector    
+     Generic JMX connector that uses JMS providers for transport
+                   
+     Gerco Dries (gerco@gdries.nl)                                                                
+     ====================================================================== -->
+<project name="JMSJMXConnector" default="dist">
+    <description>
+    	Generic JMX connector that uses JMS providers for transport
+    </description>
+
+	<property name="AMQ_HOME" location="D:\iona\fuse-message-broker-5.1.0.0"/>
+	<property name="SMQ_HOME" location="D:\sonic76\MQ7.6"/>
+	<property name="version" value="1.1"/>
+	
+    <!-- ================================= 
+          target: dist              
+         ================================= -->
+    <target name="dist" depends="jar,srcjar" description="--> Create distribution zipfile">
+        <zip destfile="target/${ant.project.name}-${version}.zip">
+        	<fileset dir="target" includes="*.jar"/>
+    	</zip>
+    </target>
+
+    <!-- - - - - - - - - - - - - - - - - - 
+          target: jar                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="jar" depends="compile">
+    	<jar destfile="target/${ant.project.name}-${version}.jar">
+    		<fileset dir="target/classes" excludes="nl/gdries/jmsjmx/test/**"/>
+    	</jar>
+    </target>
+	
+    <target name="srcjar">
+    	<jar destfile="target/${ant.project.name}-${version}-src.jar">
+    		<fileset dir="src"/>
+    	</jar>
+    </target>
+
+	<target name="compile" depends="mktarget">
+		<mkdir dir="target/classes"/>
+		<javac srcdir="src" destdir="target/classes" debug="on" source="1.5" target="1.5">
+			<classpath>
+				<fileset dir="lib"/>
+				<fileset dir="${AMQ_HOME}" includes="activemq-all-*.jar"/>
+				<fileset dir="${SMQ_HOME}/lib" includes="sonic_Client.jar"/>
+			</classpath>
+		</javac>
+	</target>
+		
+	<target name="mktarget">
+		<mkdir dir="target"/>
+	</target>
+		
+	<target name="clean">
+		<delete dir="target" failonerror="no"/>
+	</target>
+</project>
